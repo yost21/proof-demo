@@ -1,0 +1,24 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/dfinity/icp-cli/main/docs/schemas/icp-yaml-schema.json
+canisters:
+  - name: service_proof
+    recipe:
+      type: "@dfinity/motoko@v4.1.0"
+      configuration:
+        main: src/backend/main.mo
+        candid: src/backend/service_proof.did
+
+  - name: frontend
+    recipe:
+      type: "@dfinity/asset-canister@v2.1.0"
+      configuration:
+        dir: src/frontend/dist
+        build:
+          - npm --prefix src/frontend ci
+          - npm --prefix src/frontend run build
+
+# Local replica on its own port so it never collides with another project's network.
+networks:
+  - name: local
+    mode: managed
+    gateway:
+      port: 8040

@@ -1,0 +1,44 @@
+type Receipt = 
+ record {
+   entryHash: text;
+   index: nat;
+   prevHash: text;
+   recordedAt: int;
+   recordedBy: principal;
+ };
+type Entry = 
+ record {
+   completedAt: text;
+   entryHash: text;
+   equipmentSerial: text;
+   index: nat;
+   partsHash: text;
+   prevHash: text;
+   recordedAt: int;
+   recordedBy: principal;
+   techId: text;
+   workOrderId: text;
+ };
+type CertifiedHead = 
+ record {
+   certificate: opt blob;
+   count: nat;
+   headHash: text;
+ };
+service : {
+  /// Allow a principal to append visits. Controllers only.
+  addRecorder: (p: principal) -> ();
+  count: () -> (nat) query;
+  /// The latest entry hash plus the subnet certificate that vouches for it.
+  /// The certificate's certified_data for this canister equals the head hash bytes.
+  getCertifiedHead: () -> (CertifiedHead) query;
+  getEntry: (index: nat) -> (opt Entry) query;
+  /// Entries in append order, starting at `offset`, at most 100 per call.
+  list: (offset: nat, limit: nat) -> (vec Entry) query;
+  /// Append one service visit. Returns a receipt holding the new entry's hash.
+  recordVisit: (workOrderId: text, equipmentSerial: text, techId: text,
+   partsHash: text, completedAt: text) -> (Receipt);
+  /// Stop a principal from appending new visits. Controllers only.
+  /// Touches the allowlist only; entries already written are never changed.
+  revokeRecorder: (p: principal) -> ();
+}

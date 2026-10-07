@@ -1,0 +1,20 @@
+[
+  {
+    // Every file: standard IC security headers, no caching of the HTML, and no
+    // uncertified raw-domain access (raw.icp0.io can't be tampered with undetected
+    // if it doesn't serve anything).
+    "match": "**/*",
+    "security_policy": "standard",
+    "headers": {
+      "Cache-Control": "public, max-age=0, must-revalidate"
+    },
+    "allow_raw_access": false
+  },
+  {
+    // Hashed build output can be cached forever.
+    "match": "assets/**/*",
+    "headers": {
+      "Cache-Control": "public, max-age=31536000, immutable"
+    }
+  }
+]

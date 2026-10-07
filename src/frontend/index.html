@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Service Proof</title>
+    <meta name="description" content="An append-only, certified service log on the Internet Computer. Demo data only." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=JetBrains+Mono:wght@400;500;700&display=swap"
+    />
+    <link rel="stylesheet" href="/src/styles.css" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="masthead">
+        <p class="eyebrow" id="network">SERVICE PROOF</p>
+        <h1>A service record nobody can quietly change.</h1>
+        <p class="lede">Imaging-equipment service visits, written to the Internet Computer. Append-only. Checked in your browser.</p>
+        <p class="canister mono" id="canister">canister: loading…</p>
+      </header>
+
+      <section class="plate verify" aria-labelledby="verify-title">
+        <div class="plate-head">
+          <h2 id="verify-title">Verify</h2>
+          <span class="tag mono">runs in this browser</span>
+        </div>
+        <button class="btn-verify" id="verify" type="button">Verify</button>
+        <div class="stamp" id="stamp" hidden></div>
+        <ol class="steps" id="steps"></ol>
+        <div class="tamper">
+          <button class="btn-ghost" id="tamper" type="button">Simulate a backdated record</button>
+          <button class="btn-ghost" id="untamper" type="button" hidden>Undo</button>
+          <p class="hint" id="tamper-hint">Changes one entry in this browser only, then verifies. The canister is never touched.</p>
+        </div>
+      </section>
+
+      <section class="plate interface" aria-labelledby="iface-title">
+        <div class="plate-head">
+          <h2 id="iface-title">The whole interface</h2>
+          <span class="tag mono">read from the chain</span>
+        </div>
+        <ul class="methods" id="methods"><li class="muted">loading…</li></ul>
+        <div class="no-edit">
+          <p class="no-edit-big">No edit. No delete.</p>
+          <p class="no-edit-small">No method can change or remove an entry once it is written.</p>
+        </div>
+        <dl class="facts">
+          <dt class="mono">module hash</dt>
+          <dd class="mono hash" id="module-hash">…</dd>
+        </dl>
+      </section>
+
+      <section class="visits" aria-labelledby="visits-title">
+        <div class="visits-head">
+          <h2 id="visits-title">Service visits</h2>
+          <span class="tag mono" id="visit-count">newest first</span>
+        </div>
+        <ol class="visit-list" id="visits"></ol>
+      </section>
+
+      <footer class="foot mono">Demo data only. Serials, techs and parts are fictional.</footer>
+    </main>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

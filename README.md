@@ -15,7 +15,7 @@ All data is fake: serials like `MRI-DEMO-0001`, techs like `TECH-07`, and hashes
 | | |
 |---|---|
 | Entity | Earthside Labs LLC (demo / media asset) |
-| Status | **Local replica only.** Never deployed to mainnet. |
+| Status | **Live on Internet Computer mainnet** since 2026-10-07. Backend `zjqte-xiaaa-aaaam-ajnaq-cai` · frontend https://zorvq-2qaaa-aaaam-ajnaa-cai.icp0.io/ · dashboard https://dashboard.internetcomputer.org/canister/zjqte-xiaaa-aaaam-ajnaq-cai · on-chain module hash `fe389a3e…765f` = the CI Linux rebuild. Sample data only. |
 | Compiler | **moc 2.0.0** (released 2026-10-06), pinned in `mops.toml`. It fixes bug #6432, in which an upgrade that dropped one stable variable and added another could pass the runtime check and lose the dropped value. |
 | Libraries | core 2.5.0, sha2 0.2.5, locked file by file in `mops.lock` |
 | Frontend | Vite 8, `@icp-sdk/core` 6.1, `@icp-sdk/bindgen` 0.4.1 |

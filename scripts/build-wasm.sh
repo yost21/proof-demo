@@ -17,11 +17,14 @@ OUT=build/service_proof.wasm
 mkdir -p build
 
 "$MOC" src/backend/main.mo --omit-metadata candid:service $(mops sources) -o "$OUT"
-ic-wasm "$OUT" -o "$OUT" metadata "moc:version" -d "$("$MOC" --version)" --keep-name-section
+# moc --version ends with a platform-specific "(source …)" build id. Strip it so a Mac
+# build and a Linux build embed the same bytes (otherwise the hashes differ by that string alone).
+MOC_VERSION="$("$MOC" --version | sed -E 's/ \(source [^)]*\)//')"
+ic-wasm "$OUT" -o "$OUT" metadata "moc:version" -d "$MOC_VERSION" --keep-name-section
 ic-wasm "$OUT" -o "$OUT" metadata "template:type" -d "motoko" --keep-name-section
 ic-wasm "$OUT" -o "$OUT" metadata "candid:service" -f src/backend/service_proof.did -v public --keep-name-section
 
-echo "moc:     $("$MOC" --version)"
+echo "moc:     $("$MOC" --version)  → embedded as: $MOC_VERSION"
 echo "ic-wasm: $(ic-wasm --version)"
 echo "wasm:    $OUT ($(wc -c < "$OUT" | tr -d ' ') bytes)"
 echo "sha256:  $(shasum -a 256 "$OUT" | cut -d' ' -f1)"

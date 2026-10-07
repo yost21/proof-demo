@@ -11,7 +11,7 @@ jobs:
   build:
     runs-on: ubuntu-24.04
     env:
-      EXPECTED_SHA256: 381a6e90582c50c6973590b425719ee0d76d112a99ef5f1e969a71049bf48735
+      EXPECTED_SHA256: fe389a3e5ea837250c5187b4c70bfed17c09ca7a9958cc8d8b0f14b01e97765f
       DFX_MOC_PATH: moc-wrapper
     steps:
       - uses: actions/checkout@v4

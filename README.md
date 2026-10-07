@@ -19,7 +19,7 @@ All data is fake: serials like `MRI-DEMO-0001`, techs like `TECH-07`, and hashes
 | Compiler | **moc 2.0.0** (released 2026-10-06), pinned in `mops.toml`. It fixes bug #6432, in which an upgrade that dropped one stable variable and added another could pass the runtime check and lose the dropped value. |
 | Libraries | core 2.5.0, sha2 0.2.5, locked file by file in `mops.lock` |
 | Frontend | Vite 8, `@icp-sdk/core` 6.1, `@icp-sdk/bindgen` 0.4.1 |
-| Module hash (canonical build) | `381a6e90582c50c6973590b425719ee0d76d112a99ef5f1e969a71049bf48735` |
+| Module hash (canonical build) | `fe389a3e5ea837250c5187b4c70bfed17c09ca7a9958cc8d8b0f14b01e97765f` |
 
 ---
 
@@ -72,7 +72,7 @@ Say this carefully on camera.
 
 - **It proves** the subnet vouches for the head hash, and that the visits on screen hash exactly to it. A lying replica, a tampered page cache or an edited row fails the check.
 - **It does not prove** that a controller never upgraded the code. A controller could ship new code that rewrites history and recomputes the whole chain, and a fresh Verify would still PASS. Three things stop that from being quiet:
-  1. Every code change shows up as a new **module hash**, and the IC records it in the canister's public history (dashboard: "Module hash" and controller history).
+  1. Every code install, upgrade or reinstall is recorded in the canister's public history (the IC keeps each change with its **module hash**). A reinstall of the *same* module wipes state without changing the hash, so watch the history, not just the hash.
   2. Every **receipt** issued before the rewrite stops matching. Anyone holding an old `entryHash` or head hash can see the change.
   3. The upgrade runtime **rejects** new code that would drop or retype stored data (tested below). This protects the data's shape. It does not stop a controller from adding new methods.
 - So the honest line is **"nobody can change it quietly."** That is different from "nobody can ever change it." To get "never", remove all controllers or hand control to a DAO after launch. That is a separate decision for the operator.
@@ -127,8 +127,8 @@ The local replica belongs to this project and runs on its own port, 8040. **Its 
 | **Upgrade that renames a stable variable** (`recorders`→`allowlist`, the #6432 drop+add case) | **Rejected:** `RTS error: Memory-incompatible program upgrade`. Old module and data untouched |
 | **Upgrade that changes a stored type** (adds a required field to stored `Entry` records) | **Rejected**, same error; data untouched |
 | Upgrade from the moc 1.3.0 build to the moc 2.0.0 build (3 stable constants became `transient`) | **Rejected**, same error. Demo canister was then reinstalled clean on moc 2.0.0 |
-| Restore canonical source → upgrade | Module hash back to exactly `381a6e90…8735`; verify PASS |
-| `scripts/build-wasm.sh` (outside icp-cli) | sha256 `381a6e90…8735`, equal to the deployed module hash |
+| Restore canonical source → upgrade | Module hash back to exactly `fe389a3e…765f`; verify PASS |
+| `scripts/build-wasm.sh` (outside icp-cli) | sha256 `fe389a3e…765f`, equal to the deployed module hash |
 
 To repeat an upgrade test: edit `src/backend/main.mo`, run `icp deploy service_proof --mode upgrade -y`, check `count` and `node scripts/verify.mjs`, then restore the file (`git checkout` once this is a repo) and upgrade again.
 
@@ -141,12 +141,12 @@ To repeat an upgrade test: edit `src/backend/main.mo`, run `icp deploy service_p
 # moc:     Motoko compiler 2.0.0 (source af4cbaqi-d501kjgh-2sgjc78a-a87f0j5x)
 # ic-wasm: ic-wasm 0.9.10
 # wasm:    build/service_proof.wasm (446484 bytes)
-# sha256:  381a6e90582c50c6973590b425719ee0d76d112a99ef5f1e969a71049bf48735
+# sha256:  fe389a3e5ea837250c5187b4c70bfed17c09ca7a9958cc8d8b0f14b01e97765f
 ```
 
 - The script runs the same four steps as the pinned `@dfinity/motoko@v4.1.0` recipe: compile with moc, then use `ic-wasm` to add the `moc:version`, `template:type` and public `candid:service` metadata. The recipe does **not** gzip, so the IC module hash is the plain `sha256` of the raw `.wasm`.
 - Pinned inputs: `mops.toml` (moc 2.0.0, core 2.5.0, sha2 0.2.5) + `mops.lock` (per-file hashes; the script runs `mops install --lock check`), `ic-wasm 0.9.10`, `src/backend/main.mo`, `src/backend/service_proof.did`.
-- Anyone can rebuild from the same commit and compare the result to the dashboard's "Module hash". For a cross-machine guarantee (Linux CI vs this Mac), confirm once that a Linux moc 2.0.0 build produces the same bytes before claiming that on camera. It has only been checked on this Mac.
+- Anyone can rebuild from the same commit and compare the result to the dashboard's "Module hash". The `reproducible-build` GitHub Actions workflow rebuilds the wasm on a clean Linux runner on every push and fails unless its sha256 equals the pinned hash. Note: `moc --version` carries a platform-specific "(source …)" id; the build embeds the version without it, so Mac and Linux builds produce identical bytes.
 - Frontend: the asset canister runs the stock DFINITY `assetstorage.wasm.gz` 0.30.2 (module hash `63d122d0…5bb6`). The page itself is certified asset content.
 
 ---

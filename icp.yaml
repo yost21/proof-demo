@@ -1,11 +1,13 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/dfinity/icp-cli/main/docs/schemas/icp-yaml-schema.json
 canisters:
+  # Deploys the exact bytes from scripts/build-wasm.sh (run it first). The pin makes icp-cli
+  # refuse any wasm that isn't the reproducible build; CI rebuilds it on Linux and checks the hash.
   - name: service_proof
-    recipe:
-      type: "@dfinity/motoko@v4.1.0"
-      configuration:
-        main: src/backend/main.mo
-        candid: src/backend/service_proof.did
+    build:
+      steps:
+        - type: pre-built
+          path: build/service_proof.wasm
+          sha256: fe389a3e5ea837250c5187b4c70bfed17c09ca7a9958cc8d8b0f14b01e97765f
 
   - name: frontend
     recipe:
